@@ -1,0 +1,10 @@
+#Example configuration options that can be placed in your main SiriProxy config.yml
+
+##########################
+#NOTICE: Modifying these options in this file has no effect. You must put them in SiriProxy's config.yml!
+##########################
+    
+    - name: 'XBMC'
+      git: 'git://github.com/brainwave9/SiriProxy-XBMC.git'
+      xbmc_host: '10.0.1.75' #Internal IP address of your computer running XBMC.
+      xbmc_port: 8080 #Port that the XBMC interface listens to.
