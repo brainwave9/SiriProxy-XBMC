@@ -33,7 +33,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     port = config["xbmc_port"]
     username = config["xbmc_username"]
     password = config["xbmc_password"]
-    Xbmc.base_uri "http://" + host + ":" + port
+    Xbmc.base_uri "http://#{host}:#{port}"
     Xbmc.basic_auth username, password
     Xbmc.load_api!
   end
