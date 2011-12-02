@@ -35,7 +35,12 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     password = config["xbmc_password"]
     Xbmc.base_uri "http://#{host}:#{port}"
     Xbmc.basic_auth username, password
-    Xbmc.load_api!
+    begin
+      Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
+      apiLoaded = true
+    rescue
+      apiLoaded = false
+    end
   end
 
   #capture greeting and name, example: say hello to john
