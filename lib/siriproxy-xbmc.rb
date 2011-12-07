@@ -43,11 +43,13 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     end
   end
 
-  if ($apiLoaded)
   #show plugin status
   listen_for /[xX] *[bB] *[mM] *[cC]/i do 
-    say "The XBMC interface is up and running"
-    
+    if ($apiLoaded)
+      say "The XBMC interface is up and running"
+    else 
+      say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
+    end
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
 
@@ -58,10 +60,5 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
 
-  else
-    say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
-    
-    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
-  end
   
 end
