@@ -44,7 +44,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   end
 
   #show plugin status
-  listen_for /[xX] .[bB] .[mM] .[cC]/i do 
+  listen_for /[xX] *[bB] *[mM] *[cC]/i do 
     say "The XBMC interface is up and running"
     
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
