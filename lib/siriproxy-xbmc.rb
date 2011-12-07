@@ -43,7 +43,14 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     end
   end
 
-  #capture greeting and name, example: say hello to john
+  #show plugin status
+  listen_for /[xX] .[bB] .[mM] .[cC]/i do 
+    say "The XBMC interface is up and running"
+    
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+
+  #play movie or episode (not working yet)
   listen_for /play (.*)/i do |title|
     say "Now playing \"#{title}\""
     
