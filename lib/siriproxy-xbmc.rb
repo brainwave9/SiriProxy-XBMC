@@ -37,15 +37,16 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     Xbmc.basic_auth username, password
     begin
       Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
-      apiLoaded = true
+      $apiLoaded = true
     rescue
-      apiLoaded = false
+      $apiLoaded = false
     end
   end
 
+  if ($apiLoaded)
   #show plugin status
   listen_for /[xX] *[bB] *[mM] *[cC]/i do 
-    say "The XBMC interface is up and running #{username}"
+    say "The XBMC interface is up and running"
     
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
@@ -53,6 +54,12 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   #play movie or episode (not working yet)
   listen_for /play (.*)/i do |title|
     say "Now playing \"#{title}\""
+    
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+
+  else
+    say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
     
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
