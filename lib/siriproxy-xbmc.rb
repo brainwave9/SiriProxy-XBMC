@@ -48,15 +48,27 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     result = ""
     title = title.downcase.gsub(/[^0-9A-Za-z]/, '')
     tvshows = Xbmc::VideoLibrary.get_tv_shows
-    tvshows.each { |show|
-      
-      showtitle = show["label"].downcase.gsub(/[^0-9A-Za-z]/, '')
-      
-      if showtitle.match(title)
-        result = show 
+    tvshows.each { |tvshow|
+
+      tvshowtitle = tvshow["label"].downcase.gsub(/[^0-9A-Za-z]/, '')
+
+      if tvshowtitle.match(title)
+        return tvshow
       end
     }
     return result
+  end
+  
+  def find_first_unwatched_episode(tvshowid)
+    result = ""
+    episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshow["tvshowid"], :fields => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
+    episodes.each { |episode|
+
+      if (episode["playcount"] == 0)
+        return episode
+      end	  
+    }
+	return result
   end
 
   #show plugin status
@@ -72,11 +84,16 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   #play movie or episode (not working yet)
   listen_for /play (.*)/i do |title|
     if ($apiLoaded)
-      show = find_show(title)
-      if (show == "")
+      tvshow = find_show(title)
+      if (tvshow == "")
         say "Title not found, please try again"
-      else      
-        say "Now playing \"#{show["label"]}\""
+      else  
+        episode = find_first_unwatched_episode(tbshow["tvshowid"]
+        if (episode == "")
+          say "No unwatched episode found for the \"#{show["label"]}\""
+        else    
+          say "Now playing \"#{episode["title"]}\"", spoken: "Now playing \"#{episode["title"]}\", \"#{episode["showtitle"]}\", season \"#{episode["season"]}\", episode \"#{episode["episode"]}\"" 
+        end
       end
     else 
       say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
