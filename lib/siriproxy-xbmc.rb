@@ -46,11 +46,11 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
 
   def find_show(title)
     result = ""
-    title = title.gsub(/[^0-9A-Za-z]/, '')
+    title = title.downcase.gsub(/[^0-9A-Za-z]/, '')
     tvshows = Xbmc::VideoLibrary.get_tv_shows
     tvshows.each { |show|
       
-      showtitle = show["label"].gsub(/[^0-9A-Za-z]/, '')
+      showtitle = show["label"].downcase.gsub(/[^0-9A-Za-z]/, '')
       
       if showtitle.match(title)
         result = show 
