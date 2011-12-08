@@ -90,9 +90,9 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
       else  
         episode = find_first_unwatched_episode(tvshow["tvshowid"])
         if (episode == "")
-          say "No unwatched episode found for the \"#{show["label"]}\""
+          say "No unwatched episode found for the \"#{tvshow["label"]}\""
         else    
-          say "Now playing \"#{episode["title"]}\", \"#{episode["showtitle"]}\", season \"#{episode["season"]}\", episode \"#{episode["episode"]}\"", spoken: "Now playing \"#{episode["title"]}\""
+          say "Now playing \"#{episode["title"]}\" (#{episode["showtitle"]}, Season #{episode["season"]}, Episode #{episode["episode"]}", spoken: "Now playing \"#{episode["title"]}\""
         end
       end
     else 
