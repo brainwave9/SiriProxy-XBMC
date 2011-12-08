@@ -35,6 +35,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     password = config["xbmc_password"]
     Xbmc.base_uri "http://#{host}:#{port}"
     Xbmc.basic_auth username, password
+    puts "Loading XBMC interface"
     begin
       Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
       $apiLoaded = true
@@ -48,7 +49,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     if ($apiLoaded)
       say "The XBMC interface is up and running"
     else 
-      say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
+      say "The XBMC interface is unavailable, please check the plugin configuration and check if XBMC is running"
     end
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
