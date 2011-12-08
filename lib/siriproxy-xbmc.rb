@@ -44,6 +44,21 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     end
   end
 
+  def find_show(title)
+    result = ""
+    title = title.gsub(/[^0-9A-Za-z]/, '')
+    tvshows = Xbmc::VideoLibrary.get_tv_shows
+    tvshows.each { |show|
+      
+      showtitle = show["label"].gsub(/[^0-9A-Za-z]/, '')
+      
+      if showtitle.match(title)
+        result = show 
+      end
+    }
+    return result
+  end
+
   #show plugin status
   listen_for /[xX] *[bB] *[mM] *[cC]/i do 
     if ($apiLoaded)
@@ -57,7 +72,12 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   #play movie or episode (not working yet)
   listen_for /play (.*)/i do |title|
     if ($apiLoaded)
-      say "Now playing \"#{title}\""
+      show = find_show(title)
+      if (show == "")
+        say "Title not found, please try again"
+      else      
+        say "Now playing \"#{show["label"]}\""
+      end
     else 
       say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
     end
