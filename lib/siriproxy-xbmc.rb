@@ -88,7 +88,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
       if (tvshow == "")
         say "Title not found, please try again"
       else  
-        episode = find_first_unwatched_episode(tbshow["tvshowid"]
+        episode = find_first_unwatched_episode(tbshow["tvshowid"])
         if (episode == "")
           say "No unwatched episode found for the \"#{show["label"]}\""
         else    
