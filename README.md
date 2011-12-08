@@ -44,6 +44,10 @@ To install SiriProxy-XBMC, add the following to your Siri Proxy config.yml file 
 
     - name: 'XBMC'
       git: 'git://github.com/brainwave9/SiriProxy-XBMC.git'
+      xbmc_host: '192.168.1.4' #Internal IP address of your computer running XBMC.
+      xbmc_port: 8080          #Port that the XBMC interface listens to.
+      xbmc_username: 'xbmc'    #Username as specified in XBMC
+      xbmc_password: 'xbmc'    #password as specified in XBMC
 
 Stop Siri Proxy (CTRL-C or `killall siriproxy`)
 
