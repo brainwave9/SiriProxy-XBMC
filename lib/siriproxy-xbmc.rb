@@ -92,7 +92,10 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
         if (episode == "")
           say "No unwatched episode found for the \"#{tvshow["label"]}\""
         else    
-          say "Now playing \"#{episode["title"]}\" (#{episode["showtitle"]}, Season #{episode["season"]}, Episode #{episode["episode"]}", spoken: "Now playing \"#{episode["title"]}\""
+          say "Now playing \"#{episode["title"]}\" (#{episode["showtitle"]}, Season #{episode["season"]}, Episode #{episode["episode"]})", spoken: "Now playing \"#{episode["title"]}\""
+          Xbmc::VideoPlaylist.clear
+          Xbmc::VideoPlaylist.add(episode["file"])
+          Xbmc::VideoPlaylist.play
         end
       end
     else 
