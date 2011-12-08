@@ -20,7 +20,20 @@ Usage
 -----
 The currently implemented commands are:
 
-"xbmc" - Siri will respond with "The XBMC interface is up and running"
+    xbmc
+
+This command can be used to test the plugin is working.
+Siri will respond with "The XBMC interface is up and running"
+
+    play <title>
+
+This command will look in your TV show library and play the first unwatched episode.
+
+Please note that title matching is very basic at the moment.
+Sometimes Siri is not correctly interpreting the name of the TV show, so you may not get a match.
+For instance the show 'two and a half men' is interpreted by Siri as '2 1/2 men', which does not match the title in the TV library.
+However 'knight rider' is interpreted as 'night rider', which partially matches the name, so SiriProxy-XBMC will find it.
+I'm open to suggestions on how to improve this further.
 
 
 
