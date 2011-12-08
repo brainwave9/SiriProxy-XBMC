@@ -61,7 +61,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   
   def find_first_unwatched_episode(tvshowid)
     result = ""
-    episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshow["tvshowid"], :fields => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
+    episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :fields => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
     episodes.each { |episode|
 
       if (episode["playcount"] == 0)
