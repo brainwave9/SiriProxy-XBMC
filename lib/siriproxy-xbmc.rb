@@ -41,6 +41,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     puts "Loading XBMC interface"
     begin
       Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
+      Xbmc::Ping
       $apiLoaded = true
     rescue
       $apiLoaded = false
