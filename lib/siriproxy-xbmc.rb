@@ -35,6 +35,9 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     password = config["xbmc_password"]
     Xbmc.base_uri "http://#{host}:#{port}"
     Xbmc.basic_auth username, password
+  end
+
+  def load_api()
     puts "Loading XBMC interface"
     begin
       Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
@@ -43,6 +46,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
       $apiLoaded = false
     end
   end
+
 
   def find_show(title)
     result = ""
@@ -73,6 +77,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
 
   #show plugin status
   listen_for /[xX] *[bB] *[mM] *[cC]/i do 
+    load_api
     if ($apiLoaded)
       say "The XBMC interface is up and running"
     else 
@@ -83,6 +88,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
 
   #play movie or episode (not working yet)
   listen_for /play (.*)/i do |title|
+    load_api
     if ($apiLoaded)
       tvshow = find_show(title)
       if (tvshow == "")
