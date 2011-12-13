@@ -6,7 +6,7 @@ class XBMCLibrary
     @xbmc_port = port
     @xbmc_username = username
     @xbmc_password = password
-	@appname = appname
+    @appname = appname
     Xbmc.base_uri "http://#{@xbmc_host}:#{@xbmc_port}"
     Xbmc.basic_auth @xbmc_username, @xbmc_password
   end

@@ -34,7 +34,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     port = config["xbmc_port"]
     username = config["xbmc_username"]
     password = config["xbmc_password"]
-    @xbmc_library = XBMCLIbrary.new(host, port, username, password, appname)
+    @xbmc_library = XBMCLibrary.new(host, port, username, password, appname)
   end
 
   #show plugin status
