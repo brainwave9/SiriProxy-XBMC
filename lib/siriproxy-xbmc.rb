@@ -45,6 +45,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
       $apiVersion = Xbmc::JSONRPC.version
       $apiLoaded = true
     rescue
+      print "[SiriProxy-XBMC] An error occurred: ",$!, "\n"
       $apiLoaded = false
     end
   end
