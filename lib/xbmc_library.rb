@@ -59,9 +59,19 @@ class XBMCLibrary
   end
 
   def play(file)
-    Xbmc::VideoPlaylist.clear
-    Xbmc::VideoPlaylist.add(file)
-    Xbmc::VideoPlaylist.play
+    begin
+      if ($apiVersion["version"] == "2")
+        Xbmc::VideoPlaylist.clear
+        Xbmc::VideoPlaylist.add(file)
+        Xbmc::VideoPlaylist.play
+      else
+        Xbmc::Playlist.clear
+        Xbmc::Playlist.add(file)
+        Xbmc::Playlist.play
+      end
+    rescue
+      puts "[#{@appname}] An error occurred: ",$!
+    end
   end
 
 end
