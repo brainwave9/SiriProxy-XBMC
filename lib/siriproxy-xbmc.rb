@@ -50,11 +50,11 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   #play movie or episode (not working yet)
   listen_for /play (.*)/i do |title|
     if (@xbmc_library.load_api)
-      tvshow = find_show(title)
+      tvshow = @xbmc_library.find_show(title)
       if (tvshow == "")
         say "Title not found, please try again"
       else  
-        episode = find_first_unwatched_episode(tvshow["tvshowid"])
+        episode = @xbmc_library.find_first_unwatched_episode(tvshow["tvshowid"])
         if (episode == "")
           say "No unwatched episode found for the \"#{tvshow["label"]}\""
         else    
