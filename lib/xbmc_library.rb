@@ -17,10 +17,10 @@ class XBMCLibrary
       Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
       $apiVersion = ""
       $apiVersion = Xbmc::JSONRPC.version
-      puts "[#{@appname}] XBMC API Version ",$apiVersion["version"]
+      puts "[#{@appname}] XBMC API Version #{$apiVersion["version"]}"
       $apiLoaded = true
     rescue
-      puts "[#{@appname}] An error occurred: ",$!
+      puts "[#{@appname}] An error occurred: #{$!}"
       $apiLoaded = false
     end
     return $apiLoaded
@@ -70,7 +70,7 @@ class XBMCLibrary
         Xbmc::Playlist.play
       end
     rescue
-      puts "[#{@appname}] An error occurred: ",$!
+      puts "[#{@appname}] An error occurred: #{$!}"
     end
   end
 
