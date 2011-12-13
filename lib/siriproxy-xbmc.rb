@@ -20,7 +20,7 @@
 
 require 'cora'
 require 'siri_objects'
-require 'xbmc-client'
+require 'xbmc_library'
 
 #######
 # This is plugin to control XBMC
@@ -29,60 +29,17 @@ require 'xbmc-client'
 
 class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   def initialize(config)
+    appname = "SiriProxy-XBMC"
     host = config["xbmc_host"]
     port = config["xbmc_port"]
     username = config["xbmc_username"]
     password = config["xbmc_password"]
-    Xbmc.base_uri "http://#{host}:#{port}"
-    Xbmc.basic_auth username, password
-  end
-
-  def load_api()
-    puts "[SiriProxy-XBMC] Connection to the XBMC interface"
-    begin
-      Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
-      $apiVersion = ""
-      $apiVersion = Xbmc::JSONRPC.version
-      puts "[SiriProxy-XBMC] XBMC API Version ",$apiVersion["version"]
-      $apiLoaded = true
-    rescue
-      puts "[SiriProxy-XBMC] An error occurred: ",$!
-      $apiLoaded = false
-    end
-  end
-
-
-  def find_show(title)
-    result = ""
-    title = title.downcase.gsub(/[^0-9A-Za-z]/, '')
-    tvshows = Xbmc::VideoLibrary.get_tv_shows
-    tvshows.each { |tvshow|
-
-      tvshowtitle = tvshow["label"].downcase.gsub(/[^0-9A-Za-z]/, '')
-
-      if tvshowtitle.match(title)
-        return tvshow
-      end
-    }
-    return result
-  end
-  
-  def find_first_unwatched_episode(tvshowid)
-    result = ""
-    episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :fields => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
-    episodes.each { |episode|
-
-      if (episode["playcount"] == 0)
-        return episode
-      end	  
-    }
-	return result
+    @xbmc_library = XBMCLIbrary.new(host, port, username, password, appname)
   end
 
   #show plugin status
   listen_for /[xX] *[bB] *[mM] *[cC]/i do 
-    load_api
-    if ($apiLoaded)
+    if (@xbmc_library.load_api)
       say "The XBMC interface is up and running"
     else 
       say "The XBMC interface is unavailable, please check the plugin configuration and check if XBMC is running"
@@ -92,8 +49,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
 
   #play movie or episode (not working yet)
   listen_for /play (.*)/i do |title|
-    load_api
-    if ($apiLoaded)
+    if (@xbmc_library.load_api)
       tvshow = find_show(title)
       if (tvshow == "")
         say "Title not found, please try again"
@@ -103,9 +59,7 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
           say "No unwatched episode found for the \"#{tvshow["label"]}\""
         else    
           say "Now playing \"#{episode["title"]}\" (#{episode["showtitle"]}, Season #{episode["season"]}, Episode #{episode["episode"]})", spoken: "Now playing \"#{episode["title"]}\""
-          Xbmc::VideoPlaylist.clear
-          Xbmc::VideoPlaylist.add(episode["file"])
-          Xbmc::VideoPlaylist.play
+          @xbmc_library.play(episode["file"])
         end
       end
     else 
