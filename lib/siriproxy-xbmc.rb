@@ -38,14 +38,15 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   end
 
   def load_api()
-    puts "Loading XBMC interface"
+    puts "[SiriProxy-XBMC] Connection to the XBMC interface"
     begin
       Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
       $apiVersion = ""
       $apiVersion = Xbmc::JSONRPC.version
+      puts "[SiriProxy-XBMC] XBMC API Version ",$apiVersion["version"]
       $apiLoaded = true
     rescue
-      print "[SiriProxy-XBMC] An error occurred: ",$!, "\n"
+      puts "[SiriProxy-XBMC] An error occurred: ",$!
       $apiLoaded = false
     end
   end
