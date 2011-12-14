@@ -28,6 +28,7 @@ class XBMCLibrary
 
 
   def find_show(title)
+    puts "[#{@appname}] Finding TV show (API version #{$apiVersion["version"]})"
     result = ""
     title = title.downcase.gsub(/[^0-9A-Za-z]/, '')
     tvshows = Xbmc::VideoLibrary.get_tv_shows
@@ -43,6 +44,7 @@ class XBMCLibrary
   end
   
   def find_first_unwatched_episode(tvshowid)
+    puts "[#{@appname}] Looking up first unwatched episode (API version #{$apiVersion["version"]})"
     result = ""
 	if ($apiVersion["version"] == "2")
       episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :fields => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
@@ -59,6 +61,7 @@ class XBMCLibrary
   end
 
   def play(file)
+    puts "[#{@appname}] Playing file (API version #{$apiVersion["version"]})"
     begin
       if ($apiVersion["version"] == "2")
         Xbmc::VideoPlaylist.clear
