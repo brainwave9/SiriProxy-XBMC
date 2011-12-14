@@ -17,7 +17,11 @@ class XBMCLibrary
       Xbmc.load_api! # This will call JSONRPC.Introspect and create all subclasses and methods dynamically
       $apiVersion = ""
       $apiVersion = Xbmc::JSONRPC.version
-      puts "[#{@appname}] XBMC API Version #{$apiVersion["version"]}"
+      if ($apiVersion["version"] == 2)
+        puts "[#{@appname}] XBMC API Version #{$apiVersion["version"]} - Dharma"
+      else
+        puts "[#{@appname}] XBMC API Version #{$apiVersion["version"]} - Eden"
+      end
       $apiLoaded = true
     rescue
       puts "[#{@appname}] An error occurred: #{$!}"
@@ -46,10 +50,10 @@ class XBMCLibrary
   def find_first_unwatched_episode(tvshowid)
     puts "[#{@appname}] Looking up first unwatched episode (API version #{$apiVersion["version"]})"
     result = ""
-	if ($apiVersion["version"] == "2")
+	if ($apiVersion["version"] == 2)
       episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :fields => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
 	else  
-      episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :fields => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
+      episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :properties => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
     end
     episodes.each { |episode|
 
@@ -63,7 +67,7 @@ class XBMCLibrary
   def play(file)
     puts "[#{@appname}] Playing file (API version #{$apiVersion["version"]})"
     begin
-      if ($apiVersion["version"] == "2")
+      if ($apiVersion["version"] == 2)
         Xbmc::VideoPlaylist.clear
         Xbmc::VideoPlaylist.add(file)
         Xbmc::VideoPlaylist.play
