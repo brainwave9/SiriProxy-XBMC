@@ -57,7 +57,7 @@ class XBMCLibrary
 	if ($apiVersion["version"] == 2)
       episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :fields => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating", "file"] )
 	else  
-      episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :properties => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating"i, "file"] )
+      episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :properties => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating", "file"] )
     end
     episodes.each { |episode|
 
