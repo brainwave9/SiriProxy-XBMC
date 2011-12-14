@@ -36,9 +36,9 @@ class XBMCLibrary
     result = ""
     title = title.downcase.gsub(/[^0-9A-Za-z]/, '')
     if ($apiVersion["version"] == 2)
-      tvshows = Xbmc::VideoLibrary.get_tv_shows( :fields => ["label", "tvshowid"] )
+      tvshows = Xbmc::VideoLibrary.get_tv_shows
     else
-      tvshows = Xbmc::VideoLibrary.get_tv_shows( :properties => ["label", "tvshowid"] )
+      tvshows = Xbmc::VideoLibrary.get_tv_shows
     end
     tvshows.each { |tvshow|
 
@@ -55,9 +55,9 @@ class XBMCLibrary
     puts "[#{@appname}] Looking up first unwatched episode (API version #{$apiVersion["version"]})"
     result = ""
 	if ($apiVersion["version"] == 2)
-      episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :fields => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
+      episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :fields => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating", "file"] )
 	else  
-      episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :properties => ["title", "showtitle", "duration", "season", "episode", "runtime", "playcount", "rating"] )
+      episodes = Xbmc::VideoLibrary.get_episodes( :tvshowid => tvshowid, :properties => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating"i, "file"] )
     end
     episodes.each { |episode|
 
