@@ -1,4 +1,4 @@
-require 'xbmc-client'
+require 'xbmc_client_v3'
 
 class XBMCLibrary
   def initialize(host, port, username, password, appname)
@@ -35,7 +35,11 @@ class XBMCLibrary
     puts "[#{@appname}] Finding TV show (API version #{$apiVersion["version"]})"
     result = ""
     title = title.downcase.gsub(/[^0-9A-Za-z]/, '')
-    tvshows = Xbmc::VideoLibrary.get_tv_shows
+    if ($apiVersion["version"] == 2)
+      tvshows = Xbmc::VideoLibrary.get_tv_shows( :fields => ["label", "tvshowid"] )
+    else
+      tvshows = Xbmc::VideoLibrary.get_tv_shows( :properties => ["label", "tvshowid"] )
+    end
     tvshows.each { |tvshow|
 
       tvshowtitle = tvshow["label"].downcase.gsub(/[^0-9A-Za-z]/, '')
