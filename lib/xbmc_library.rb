@@ -76,9 +76,7 @@ class XBMCLibrary
         Xbmc::VideoPlaylist.add(file)
         Xbmc::VideoPlaylist.play
       else
-        Xbmc::Playlist.clear
-        Xbmc::Playlist.add(file)
-        Xbmc::Playlist.play
+        Xbmc::Player.open(file)
       end
     rescue
       puts "[#{@appname}] An error occurred: #{$!}"
