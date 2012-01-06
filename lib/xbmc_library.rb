@@ -1,5 +1,4 @@
 require 'httparty'
-require 'ruby_ext'
 require 'active_support/core_ext'
 
 class XBMCLibrary
@@ -46,10 +45,7 @@ class XBMCLibrary
 
 
   def test()
-    set_xbmc_config()
-    xbmc('JSONRPC.version')
-
-
+    return xbmc('VideoLibrary.GetRecentlyAddedMovies')
   end
 
 

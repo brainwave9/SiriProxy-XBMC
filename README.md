@@ -72,8 +72,8 @@ Optionally you can specify a room name if you have configured the plugin for mul
     Use the <room name>
     Control the <room name>
 
-These commands set the active room to <room name>.
-All commands will be sent to this room by default, until you specify another room.
+These commands set the active room.
+All commands will be sent to this room, until you specify another room of course.
 
     play <title> [in the <room name>]
 
