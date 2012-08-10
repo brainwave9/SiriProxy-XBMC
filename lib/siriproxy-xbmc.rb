@@ -103,6 +103,50 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
 
+  # scan
+  listen_for /^scan/i do 
+    if (@xbmc.connect(@active_room))
+      if @xbmc.scan()
+        say "I'm scanning for new content"
+      else
+        say "There was a problem scanning for new content"
+      end
+    end
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+
+  # recently added movies
+  listen_for /recent.*movies/i do 
+    if (@xbmc.connect(@active_room))
+      data = @xbmc.get_recently_added_movies()
+      list = ""
+      data["movies"].each { |movie| list = list + movie["label"] + "\n" }
+      say list, spoken: "Here are your recently added movies"
+    end
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+
+  # recently added episodes
+  listen_for /recent.*tv/i do 
+    if (@xbmc.connect(@active_room))
+      data = @xbmc.get_recently_added_episodes()
+
+      shows = {}
+      tvdata = @xbmc.get_tv_shows()
+      tvdata["tvshows"].each do |show|
+        shows[show["tvshowid"]] = show["label"]
+      end
+
+      list = ""
+      data["episodes"].each do |episode|
+	episode_data = @xbmc.get_episode(episode["episodeid"])
+        list = list + shows[episode_data["episodedetails"]["tvshowid"]] + ": " + episode["label"] + "\n"
+      end
+      say list, spoken: "Here are your recently added TV episodes"
+    end
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+
   # resume playing
   listen_for /^resume|unpause|continue/i do 
     if (@xbmc.connect(@active_room))

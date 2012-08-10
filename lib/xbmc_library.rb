@@ -189,5 +189,29 @@ class XBMCLibrary
     return false
   end
 
+  def scan()
+    if ($apiVersion["version"] == 2)
+      xbmc('VideoLibrary.ScanForContent')
+    else
+      xbmc('VideoLibrary.Scan')
+    end
+    return true
+  end
+
+  def get_recently_added_episodes()
+    return xbmc('VideoLibrary.GetRecentlyAddedEpisodes')
+  end
+
+  def get_recently_added_movies()
+    return xbmc('VideoLibrary.GetRecentlyAddedMovies')
+  end
+
+  def get_tv_shows()
+    return xbmc('VideoLibrary.GetTVShows')
+  end
+
+  def get_episode(id)
+    return xbmc('VideoLibrary.GetEpisodeDetails', { :episodeid => id, :properties => ['tvshowid'] })
+  end
 end
 
