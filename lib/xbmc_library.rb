@@ -34,8 +34,8 @@ class XBMCLibrary
   # Raw API interaction: Invoke the given JSON RPC Api call and return the raw response (which is an instance of
   # HTTParty::Response)
   def invoke_json_method(method, params={})
-    response = self.class.post('/jsonrpc', :body => {"jsonrpc" => "2.0", "params" => params, "id" => "1", "method" => method}.to_json)
-    raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you set up the correct user name and password ?" if response.response.class == Net::HTTPUnauthorized
+    response = self.class.post('/jsonrpc', :body => {"jsonrpc" => "2.0", "params" => params, "id" => "1", "method" => method}.to_json,:headers => { 'Content-Type' => 'application/json' } )    
+raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you set up the correct user name and password ?" if response.response.class == Net::HTTPUnauthorized
     response
       
     # Capture connection errors and send them out with a custom message
