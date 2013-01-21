@@ -24,7 +24,6 @@ class XBMCLibrary
     return true
   end
 
-
   # API interaction: Invokes the given method with given params, parses the JSON response body, maps it to
   # a HashWithIndifferentAccess and returns the :result subcollection
   def xbmc(method, params={})
@@ -34,8 +33,8 @@ class XBMCLibrary
   # Raw API interaction: Invoke the given JSON RPC Api call and return the raw response (which is an instance of
   # HTTParty::Response)
   def invoke_json_method(method, params={})
-    response = self.class.post('/jsonrpc', :body => {"jsonrpc" => "2.0", "params" => params, "id" => "1", "method" => method}.to_json,:headers => { 'Content-Type' => 'application/json' } )    
-raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you set up the correct user name and password ?" if response.response.class == Net::HTTPUnauthorized
+    response = self.class.post('/jsonrpc', :body => {"jsonrpc" => "2.0", "params" => params, "id" => "1", "method" => method}.to_json,:headers => { 'Content-Type' => 'application/json' } )
+	raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you set up the correct user name and password ?" if response.response.class == Net::HTTPUnauthorized
     response
       
     # Capture connection errors and send them out with a custom message
@@ -52,16 +51,20 @@ raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you se
   def connect(location)
     puts "[#{@appname}] Connecting to the XBMC interface (#{location})"
     $apiLoaded = false
+      
     begin
       if (set_xbmc_config(location))
         $apiVersion = ""
         $apiVersion = xbmc('JSONRPC.version')
 
-        if ($apiVersion["version"] == 2)
-          puts "[#{@appname}] XBMC API Version #{$apiVersion["version"]} - Dharma"
-        else
-          puts "[#{@appname}] XBMC API Version #{$apiVersion["version"]} - Eden"
-        end
+          if ($apiVersion["version"] == {"major"=>6, "minor"=>0, "patch"=>0})
+              puts "[#{@appname}] XBMC API Version 6 - Frodo"
+          elsif ($apiVersion["version"] == 4)
+              puts "[#{@appname}] XBMC API Version #{$apiVersion["version"]} - Eden"
+          elsif ($apiVersion["version"] == 2)
+              puts "[#{@appname}] XBMC API Version #{$apiVersion["version"]} - Dharma"
+          end
+          
         $apiLoaded = true
       end
     rescue
@@ -76,7 +79,7 @@ raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you se
     if ($apiVersion["version"] == 2)
       players = xbmc('Player.GetActivePlayers')
       result = players
-    else
+    elsif 
       players = xbmc('Player.GetActivePlayers')
       players.each { |player|
         if (player["type"] == "video")
@@ -188,6 +191,29 @@ raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you se
     end
     return false
   end
+  def scan()
+    if ($apiVersion["version"] == 2)
+      xbmc('VideoLibrary.ScanForContent')
+    else
+      xbmc('VideoLibrary.Scan')
+    end
+    return true
+  end
 
+  def get_recently_added_episodes()
+    return xbmc('VideoLibrary.GetRecentlyAddedEpisodes')
+  end
+
+  def get_recently_added_movies()
+    return xbmc('VideoLibrary.GetRecentlyAddedMovies')
+  end
+
+  def get_tv_shows()
+    return xbmc('VideoLibrary.GetTVShows')
+  end
+
+  def get_episode(id)
+    return xbmc('VideoLibrary.GetEpisodeDetails', { :episodeid => id, :properties => ['tvshowid'] })
+  end
 end
 

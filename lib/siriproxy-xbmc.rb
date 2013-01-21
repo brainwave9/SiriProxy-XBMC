@@ -103,6 +103,51 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
 
+  # scan
+  listen_for /^scan/i do 
+    if (@xbmc.connect(@active_room))
+      if @xbmc.scan()
+        say "I'm scanning for new content"
+      else
+        say "There was a problem scanning for new content"
+      end
+    end
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+
+  # recently added movies
+  listen_for /recent.*movies/i do 
+    if (@xbmc.connect(@active_room))
+      data = @xbmc.get_recently_added_movies()
+      list = ""
+      data["movies"].each { |movie| list = list + movie["label"] + "\n" }
+      say list, spoken: "Here are your recently added movies"
+    end
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+
+  # recently added episodes
+  listen_for /recent.*tv/i do 
+    if (@xbmc.connect(@active_room))
+      data = @xbmc.get_recently_added_episodes()
+
+      shows = {}
+      tvdata = @xbmc.get_tv_shows()
+      tvdata["tvshows"].each do |show|
+        shows[show["tvshowid"]] = show["label"]
+      end
+
+      list = ""
+      data["episodes"].each do |episode|
+	episode_data = @xbmc.get_episode(episode["episodeid"])
+        list = list + shows[episode_data["episodedetails"]["tvshowid"]] + ": " + episode["label"] + "\n"
+      end
+      say list, spoken: "Here are your recently added TV episodes"
+    end
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+
+
   # resume playing
   listen_for /^resume|unpause|continue/i do 
     if (@xbmc.connect(@active_room))
@@ -116,7 +161,6 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
   end
 
   # set default room
-  # set default room
   listen_for /(?:(?:[Ii]'m in)|(?:[Ii] am in)|(?:[Uu]se)|(?:[Cc]ontrol)) the (.*)/i do |roomname|
     roomname = roomname.downcase.strip
     if (roomname != "" && roomname != nil && @roomlist.has_key?(roomname))
@@ -128,43 +172,63 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end  
 
-  #play movie or episode
-  listen_for /play (.+?)(?: in the (.*))?$/i do |title,roomname|
-    if (roomname == "" || roomname == nil)
-      roomname = @active_room
-    else
-      roomname = roomname.downcase.strip
-    end
-
-    if (@xbmc.connect(roomname))
-      if @roomlist.has_key?(roomname)
-        @active_room = roomname
-      end
-
-      tvshow = @xbmc.find_show(title)
-      if (tvshow == "")
-        movie = @xbmc.find_movie(title)
-        if (movie == "")
-          say "Title not found, please try again"
+  #play movie
+    listen_for /play movie (.+?)(?: in the (.*))?$/i do |title,roomname|
+        if (roomname == "" || roomname == nil)
+            roomname = @active_room
         else
-          say "Now playing \"#{movie["title"]}\"", spoken: "Now playing \"#{movie["title"]}\""
-          @xbmc.play(movie["file"])
+            roomname = roomname.downcase.strip
         end
-      else  
-        episode = @xbmc.find_first_unwatched_episode(tvshow["tvshowid"])
-        if (episode == "")
-          say "No unwatched episode found for the \"#{tvshow["label"]}\""
-        else    
-          say "Now playing \"#{episode["title"]}\" (#{episode["showtitle"]}, Season #{episode["season"]}, Episode #{episode["episode"]})", spoken: "Now playing \"#{episode["title"]}\""
-          @xbmc.play(episode["file"])
-        end
-      end
-    else 
-      say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
-    end
-    
+                  
+            if (@xbmc.connect(roomname))
+                if @roomlist.has_key?(roomname)
+                  @active_room = roomname
+                end
+                  
+                movie = @xbmc.find_movie(title)
+                  if (movie == "")
+                    say "Title not found, please try again"
+                  else
+                    say "Now playing \"#{movie["title"]}\"", spoken: "Now playing \"#{movie["title"]}\""
+                    @xbmc.play(movie["file"])
+                  end
+            else
+                say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
+            end
+                  
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
-  end
+    end
+                  
+  #play TV
+    listen_for /play TV show (.+?)(?: in the (.*))?$/i do |title,roomname|
+        if (roomname == "" || roomname == nil)
+            roomname = @active_room
+        else
+            roomname = roomname.downcase.strip
+        end
+                  
+            if (@xbmc.connect(roomname))
+                if @roomlist.has_key?(roomname)
+                  @active_room = roomname
+                end
+                  
+                tvshow = @xbmc.find_show(title)
+                  if (tvshow == "")
+                    say "Title not found, please try again"
+                  else
+                    episode = @xbmc.find_first_unwatched_episode(tvshow["tvshowid"])
+                        if (episode == "")
+                            say "No unwatched episode found for the \"#{tvshow["label"]}\""
+                        else
+                            say "Now playing \"#{episode["title"]}\" (#{episode["showtitle"]}, Season #{episode["season"]}, Episode #{episode["episode"]})", spoken: "Now playing \"#{episode["title"]}\""
+                            @xbmc.play(episode["file"])
+                        end
+                  end
+                  else
+                        say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
+            end
+                  
+        request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+        end
 
-  
 end
