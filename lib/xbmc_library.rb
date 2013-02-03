@@ -6,6 +6,8 @@ class XBMCLibrary
   class UnauthorizedError < StandardError; end;
   
   include HTTParty
+  
+  default_timeout 2 #Needed if you have multiple rooms to avoid "I don't know what you mean" response due to non-responding SiriProxy since time outs of XBMC connections are not complete.
 
   def initialize(serverlist, appname)
     @xbmc = serverlist
