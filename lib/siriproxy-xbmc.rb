@@ -226,7 +226,6 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
       tvshow = @xbmc.find_show(title)
       if (tvshow == "")
           say "Title not found, please try again"
-        end
       else  
         episode = @xbmc.find_random_episode(tvshow["tvshowid"])
         if (episode == "")
