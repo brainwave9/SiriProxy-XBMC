@@ -150,7 +150,7 @@ raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you se
       episodes = xbmc('VideoLibrary.GetEpisodes', { :tvshowid => tvshowid, :fields => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating", "file"] } )["episodes"]
 	else  
       episodes = xbmc('VideoLibrary.GetEpisodes', { :tvshowid => tvshowid, :properties => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating", "file"] } )["episodes"]
-    end
+        end
     
     return episodes.sample
 
