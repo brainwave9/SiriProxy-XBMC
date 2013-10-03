@@ -144,6 +144,18 @@ raise XBMCLibrary::UnauthorizedError, "Could not authorize with XBMC. Did you se
         return result
   end
 
+  def find_random_episode(tvshowid)
+    puts "[#{@appname}] Looking up first unwatched episode (API version #{$apiVersion["version"]})"
+	if ($apiVersion["version"] == 2)
+      episodes = xbmc('VideoLibrary.GetEpisodes', { :tvshowid => tvshowid, :fields => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating", "file"] } )["episodes"]
+	else  
+      episodes = xbmc('VideoLibrary.GetEpisodes', { :tvshowid => tvshowid, :properties => ["title", "showtitle", "season", "episode", "runtime", "playcount", "rating", "file"] } )["episodes"]
+    end
+    
+    return episodes.sample
+
+  end
+
   def play(file)
     puts "[#{@appname}] Playing file (API version #{$apiVersion["version"]})"
     begin
