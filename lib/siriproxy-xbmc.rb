@@ -209,6 +209,38 @@ class SiriProxy::Plugin::XBMC < SiriProxy::Plugin
     
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
+  
+  #play random episode
+  listen_for /random (.+?)(?: in the (.*))?$/i do |title,roomname|
+    if (roomname == "" || roomname == nil)
+      roomname = @active_room
+    else
+      roomname = roomname.downcase.strip
+    end
+
+    if (@xbmc.connect(roomname))
+      if @roomlist.has_key?(roomname)
+        @active_room = roomname
+      end
+
+      tvshow = @xbmc.find_show(title)
+      if (tvshow == "")
+          say "Title not found, please try again"
+      else  
+        episode = @xbmc.find_random_episode(tvshow["tvshowid"])
+        if (episode == "")
+          say "No episode found for the \"#{tvshow["label"]}\""
+        else    
+          say "Now playing \"#{episode["title"]}\" (#{episode["showtitle"]}, Season #{episode["season"]}, Episode #{episode["episode"]})", spoken: "Now playing \"#{episode["title"]}\""
+          @xbmc.play(episode["file"])
+        end
+      end
+    else 
+      say "The XBMC interface is unavailable, please check the plugin configuration or check if XBMC is running"
+    end
+    
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
 
   
 end
